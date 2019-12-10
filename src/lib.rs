@@ -87,6 +87,8 @@ impl Plugin for Whisper {
             return;
         }
 
+        let volume = self.params.volume.get();
+
         // Now, we want to loop over our output channels.  This
         // includes our left and right channels (or more, if you
         // are working with surround sound).
@@ -95,7 +97,7 @@ impl Plugin for Whisper {
             for output_sample in output_channel {
                 // For every sample, we want to generate a random value
                 // from -1.0 to 1.0.
-                *output_sample = (random::<f32>() - 0.5f32) * 2f32 * self.params.volume.get();
+                *output_sample = (random::<f32>() - 0.5f32) * 2f32 * volume;
             }
         }
     }
@@ -290,7 +292,7 @@ impl iced_winit::Application for Counter {
     fn view(&mut self) -> Element<Message> {
         Column::new()
             .padding(20)
-            .push(Text::new("Volume".to_string()).size(50))
+            .push(Text::new("Volume".to_string()).size(32))
             .push(iced::widget::Slider::new(
                 &mut self.volume_slider,
                 0.0..=1.0,
