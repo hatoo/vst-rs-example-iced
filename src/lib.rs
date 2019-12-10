@@ -202,11 +202,14 @@ struct GUI {
 impl GUI {
     fn new(parent: HWND, params: Arc<WhisperParameters>) -> Self {
         let mut setting = iced_winit::Settings::default();
+        // Settings for VST
         setting.window.decorations = false;
         setting.window.platform_specific.parent = Some(parent);
         setting.window.size = (WIDTH, HEIGHT);
 
+        // Initialize `Application` to share `params`
         let app = WhisperGUI::new(params);
+        // Save Box of `Generator` to do event loop on idle method
         let gen = app.run_generator(Command::none(), setting);
 
         Self { gen }
@@ -223,6 +226,7 @@ impl Editor for GUIWrapper {
     }
 
     fn idle(&mut self) {
+        // Poll events here
         if let Some(inner) = self.inner.as_mut() {
             if let std::ops::GeneratorState::Complete(_) =
                 Generator::resume(std::pin::Pin::new(&mut inner.gen))
@@ -248,6 +252,7 @@ impl Editor for GUIWrapper {
 
 use iced::{Column, Element, Text};
 
+// `Application`
 struct WhisperGUI {
     params: Arc<WhisperParameters>,
     volume_slider: iced::widget::slider::State,
@@ -272,12 +277,13 @@ impl iced_winit::Application for WhisperGUI {
     type Message = Message;
 
     fn new() -> (Self, Command<Self::Message>) {
-        // (Self::default(), Command::none())
+        // I don't use this method
+        // I initialize and run by `run_generator` method which I added
         unimplemented!()
     }
 
     fn title(&self) -> String {
-        String::from("A simple counter")
+        String::from("Whisper")
     }
 
     fn update(&mut self, message: Message) -> Command<Self::Message> {
