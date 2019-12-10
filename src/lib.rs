@@ -206,7 +206,7 @@ impl GUI {
         setting.window.platform_specific.parent = Some(parent);
         setting.window.size = (WIDTH, HEIGHT);
 
-        let app = Counter::new(params);
+        let app = WhisperGUI::new(params);
         let gen = app.run_generator(Command::none(), setting);
 
         Self { gen }
@@ -248,12 +248,12 @@ impl Editor for GUIWrapper {
 
 use iced::{Column, Element, Text};
 
-struct Counter {
+struct WhisperGUI {
     params: Arc<WhisperParameters>,
     volume_slider: iced::widget::slider::State,
 }
 
-impl Counter {
+impl WhisperGUI {
     fn new(params: Arc<WhisperParameters>) -> Self {
         Self {
             params,
@@ -267,7 +267,7 @@ enum Message {
     VolumeChanged(f32),
 }
 
-impl iced_winit::Application for Counter {
+impl iced_winit::Application for WhisperGUI {
     type Renderer = iced_wgpu::Renderer;
     type Message = Message;
 
