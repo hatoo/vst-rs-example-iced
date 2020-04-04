@@ -201,16 +201,18 @@ struct GUI {
 
 impl GUI {
     fn new(parent: HWND, params: Arc<WhisperParameters>) -> Self {
-        let mut setting = iced_winit::Settings::default();
+        let mut setting = iced_winit::settings::Settings {
+            window: Default::default(),
+            flags: params,
+        };
         // Settings for VST
         setting.window.decorations = false;
         setting.window.platform_specific.parent = Some(parent);
         setting.window.size = (WIDTH, HEIGHT);
 
         // Initialize `Application` to share `params`
-        let app = WhisperGUI::new(params);
         // Save Box of `Generator` to do event loop on idle method
-        let gen = app.run_generator(Command::none(), setting);
+        let gen = WhisperGUI::run_generator(setting, Default::default()); // app.run_generator(Command::none(), setting);
 
         Self { gen }
     }
@@ -229,7 +231,7 @@ impl Editor for GUIWrapper {
         // Poll events here
         if let Some(inner) = self.inner.as_mut() {
             if let std::ops::GeneratorState::Complete(_) =
-                Generator::resume(std::pin::Pin::new(&mut inner.gen))
+                Generator::resume(std::pin::Pin::new(&mut inner.gen), ())
             {
                 self.inner = None;
             }
@@ -250,7 +252,7 @@ impl Editor for GUIWrapper {
     }
 }
 
-use iced::{Column, Element, Text};
+use iced::{Column, Element, Subscription, Text};
 
 // `Application`
 struct WhisperGUI {
@@ -273,13 +275,13 @@ enum Message {
 }
 
 impl iced_winit::Application for WhisperGUI {
-    type Renderer = iced_wgpu::Renderer;
+    type Backend = iced_wgpu::window::Backend;
+    type Executor = iced::executor::Default;
     type Message = Message;
+    type Flags = Arc<WhisperParameters>;
 
-    fn new() -> (Self, Command<Self::Message>) {
-        // I don't use this method
-        // I initialize and run by `run_generator` method which I added
-        unimplemented!()
+    fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
+        (Self::new(flags), Command::none())
     }
 
     fn title(&self) -> String {
@@ -293,6 +295,10 @@ impl iced_winit::Application for WhisperGUI {
             }
         }
         Command::none()
+    }
+
+    fn subscription(&self) -> Subscription<Self::Message> {
+        unimplemented!()
     }
 
     fn view(&mut self) -> Element<Message> {
