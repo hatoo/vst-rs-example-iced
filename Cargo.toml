@@ -11,9 +11,9 @@ vst = "0.2"
 rand = "0.7"
 winapi = "0.3"
 
-iced = { git = "https://github.com/hatoo/iced.git", branch = "run_generator" }
-iced_winit = { git = "https://github.com/hatoo/iced.git", branch = "run_generator" }
-iced_wgpu = { git = "https://github.com/hatoo/iced.git", branch = "run_generator" }
+iced = "0.1"
+iced_winit = "0.1"
+iced_wgpu = "0.2"
 
 [lib]
 name = "whisper"

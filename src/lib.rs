@@ -1,4 +1,3 @@
-#![feature(generators, generator_trait)]
 #[macro_use]
 extern crate vst;
 
@@ -185,8 +184,6 @@ use iced_winit::Application;
 use iced_winit::Command;
 use winapi::shared::windef::HWND;
 
-use std::ops::Generator;
-
 const WIDTH: u32 = 400;
 const HEIGHT: u32 = 200;
 
@@ -195,13 +192,11 @@ struct GUIWrapper {
     inner: Option<GUI>,
 }
 
-struct GUI {
-    gen: Box<dyn std::marker::Unpin + std::ops::Generator<Yield = (), Return = ()>>,
-}
+struct GUI {}
 
 impl GUI {
     fn new(parent: HWND, params: Arc<WhisperParameters>) -> Self {
-        let mut setting = iced_winit::Settings::default();
+        let mut setting = iced_winit::Settings::<()>::default();
         // Settings for VST
         setting.window.decorations = false;
         setting.window.platform_specific.parent = Some(parent);
@@ -210,9 +205,9 @@ impl GUI {
         // Initialize `Application` to share `params`
         let app = WhisperGUI::new(params);
         // Save Box of `Generator` to do event loop on idle method
-        let gen = app.run_generator(Command::none(), setting);
+        // let gen = app.run_generator(Command::none(), setting);
 
-        Self { gen }
+        Self {}
     }
 }
 
@@ -227,13 +222,6 @@ impl Editor for GUIWrapper {
 
     fn idle(&mut self) {
         // Poll events here
-        if let Some(inner) = self.inner.as_mut() {
-            if let std::ops::GeneratorState::Complete(_) =
-                Generator::resume(std::pin::Pin::new(&mut inner.gen))
-            {
-                self.inner = None;
-            }
-        }
     }
 
     fn close(&mut self) {
@@ -250,7 +238,7 @@ impl Editor for GUIWrapper {
     }
 }
 
-use iced::{Column, Element, Text};
+use iced::{Column, Element, Subscription, Text};
 
 // `Application`
 struct WhisperGUI {
@@ -273,10 +261,12 @@ enum Message {
 }
 
 impl iced_winit::Application for WhisperGUI {
-    type Renderer = iced_wgpu::Renderer;
+    type Backend = iced_wgpu::window::Backend;
+    type Executor = iced::executor::Null;
     type Message = Message;
+    type Flags = ();
 
-    fn new() -> (Self, Command<Self::Message>) {
+    fn new(_: Self::Flags) -> (Self, Command<Self::Message>) {
         // I don't use this method
         // I initialize and run by `run_generator` method which I added
         unimplemented!()
@@ -293,6 +283,10 @@ impl iced_winit::Application for WhisperGUI {
             }
         }
         Command::none()
+    }
+
+    fn subscription(&self) -> Subscription<Self::Message> {
+        unimplemented!()
     }
 
     fn view(&mut self) -> Element<Message> {
