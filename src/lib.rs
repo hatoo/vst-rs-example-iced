@@ -229,7 +229,7 @@ impl Editor for GUIWrapper {
         // Poll events here
         if let Some(inner) = self.inner.as_mut() {
             if let std::ops::GeneratorState::Complete(_) =
-                Generator::resume(std::pin::Pin::new(&mut inner.gen))
+                Generator::resume(std::pin::Pin::new(&mut inner.gen), ())
             {
                 self.inner = None;
             }
