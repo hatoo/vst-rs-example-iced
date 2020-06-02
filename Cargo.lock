@@ -1682,7 +1682,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "vst"
 version = "0.2.0"
-source = "git+https://github.com/rustaudio/vst-rs#f0b7fd317e590312e55467eaee29f7a813583df2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.68 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1927,7 +1927,7 @@ dependencies = [
  "log-panics 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "simple-logging 2.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "vst 0.2.0 (git+https://github.com/rustaudio/vst-rs)",
+ "vst 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -2282,7 +2282,7 @@ dependencies = [
 "checksum url 2.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "829d4a8476c35c9bf0bbce5a3b23f4106f79728039b726d292bb93bc106787cb"
 "checksum vec_map 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)" = "05c78687fb1a80548ae3250346c3db86a80a7cdd77bda190189f2d0a0987c81a"
 "checksum void 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
-"checksum vst 0.2.0 (git+https://github.com/rustaudio/vst-rs)" = "<none>"
+"checksum vst 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "9f282ef6465008618bb1e3de35760f01f9df361ea4f44a47144e96b8b67b9f28"
 "checksum walkdir 2.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "777182bc735b6424e1a57516d35ed72cb8019d85c8c9bf536dccb3445c1a2f7d"
 "checksum wasi 0.9.0+wasi-snapshot-preview1 (registry+https://github.com/rust-lang/crates.io-index)" = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519"
 "checksum wasm-bindgen 0.2.60 (registry+https://github.com/rust-lang/crates.io-index)" = "2cc57ce05287f8376e998cbddfb4c8cb43b84a7ec55cf4551d7c00eef317a47f"

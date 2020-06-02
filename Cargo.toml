@@ -7,8 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# vst = "0.2"
-vst = { git = "https://github.com/rustaudio/vst-rs" }
+vst = "0.2"
 rand = "0.7"
 winapi = "0.3"
 

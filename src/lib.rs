@@ -136,7 +136,7 @@ impl Plugin for Whisper {
     }
 
     fn get_editor(&mut self) -> Option<Box<dyn Editor>> {
-        simple_logging::log_to_file("test.log", LevelFilter::Trace);
+        simple_logging::log_to_file("test.log", LevelFilter::Trace).unwrap();
         log_panics::init();
         Some(Box::new(GUIWrapper {
             inner: None,
@@ -203,23 +203,12 @@ struct GUI {
 
 impl GUI {
     fn new(parent: HWND, params: Arc<WhisperParameters>) -> Self {
-        /*
-        let mut setting = iced_winit::settings::Settings {
-            window: Default::default(),
-            flags: params.clone(),
-        };
-        // Settings for VST
-        setting.window.decorations = false;
-        setting.window.platform_specific.parent = Some(parent);
-        setting.window.size = (WIDTH, HEIGHT);
-        // setting.window.resizable = true;
-        */
-
         // Initialize `Application` to share `params`
         // Save Box of `Generator` to do event loop on idle method
         let gen = Box::new(move || {
+            // Almost copypasta of https://github.com/hecrj/iced/tree/master/examples/integration
             use iced_wgpu::{wgpu, Backend, Renderer, Settings, Viewport};
-            use iced_winit::{futures, program, winit, Application, Debug, Size};
+            use iced_winit::{futures, program, winit, Debug, Size};
 
             use winit::{
                 event::{Event, ModifiersState, WindowEvent},
@@ -238,17 +227,13 @@ impl GUI {
                 })
                 .build(&event_loop)
                 .unwrap();
-            // let window = winit::window::Window::new(&event_loop).unwrap();
 
             let physical_size = window.inner_size();
-            log::info!("physical_size {:?}", physical_size);
-            log::info!("scale_factor {:?}", window.scale_factor());
             let mut viewport = Viewport::with_physical_size(
                 Size::new(physical_size.width, physical_size.height),
-                // Size::new(WIDTH, HEIGHT),
                 window.scale_factor(),
             );
-            let mut modifiers = ModifiersState::default();
+            let modifiers = ModifiersState::default();
 
             // Initialize wgpu
             let surface = wgpu::Surface::create(&window);
@@ -377,6 +362,7 @@ impl GUI {
                                     label: None,
                                 });
 
+                            // Clear screen
                             let _ = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                                 color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
                                     attachment: &frame.view,
@@ -392,10 +378,6 @@ impl GUI {
                                 }],
                                 depth_stencil_attachment: None,
                             });
-                            // We draw the scene first
-                            let program = state.program();
-
-                            // scene.draw(&mut encoder, &frame.view, program.background_color());
 
                             // And then iced on top
                             let mouse_interaction = renderer.backend_mut().draw(
