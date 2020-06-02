@@ -19,12 +19,9 @@ log-panics = "2.0.0"
 # iced = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
 # iced_winit = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
 # iced_wgpu = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
-# iced = { path = "../iced" }
-# iced_winit = { path = "../iced/winit" }
-# iced_wgpu = { path = "../iced/wgpu" }
-iced = { git = "https://github.com/hatoo/iced.git" }
-iced_winit = { git = "https://github.com/hatoo/iced.git" }
-iced_wgpu = { git = "https://github.com/hatoo/iced.git" }
+iced = { path = "../iced" }
+iced_winit = { path = "../iced/winit" }
+iced_wgpu = { path = "../iced/wgpu" }
 
 [lib]
 name = "whisper"
