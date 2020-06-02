@@ -184,7 +184,6 @@ impl PluginParameters for WhisperParameters {
     }
 }
 
-use iced_winit::Application;
 use iced_winit::Command;
 use winapi::shared::windef::HWND;
 
@@ -291,21 +290,10 @@ enum Message {
     VolumeChanged(f32),
 }
 
-impl iced_winit::Application for WhisperGUI {
-    type Backend = iced_wgpu::window::Backend;
-    type Executor = iced::executor::Default;
+impl iced_winit::Program for WhisperGUI {
     type Message = Message;
-    type Flags = Arc<WhisperParameters>;
+    type Renderer = iced_wgpu::Renderer;
 
-    fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
-        log::info!("iced new");
-        (Self::new(flags), Command::none())
-    }
-
-    fn title(&self) -> String {
-        log::info!("iced title");
-        String::from("Whisper")
-    }
 
     fn update(&mut self, message: Message) -> Command<Self::Message> {
         log::info!("iced title");
@@ -315,11 +303,6 @@ impl iced_winit::Application for WhisperGUI {
             }
         }
         Command::none()
-    }
-
-    fn subscription(&self) -> Subscription<Self::Message> {
-        log::info!("iced suscription");
-        Subscription::none()
     }
 
     fn view(&mut self) -> Element<Message> {
@@ -334,5 +317,24 @@ impl iced_winit::Application for WhisperGUI {
                 Message::VolumeChanged,
             ))
             .into()
+    }
+}
+
+impl iced_winit::Application for WhisperGUI {
+    type Flags = Arc<WhisperParameters>;
+
+    fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
+        log::info!("iced new");
+        (Self::new(flags), Command::none())
+    }
+
+    fn title(&self) -> String {
+        log::info!("iced title");
+        String::from("Whisper")
+    }
+
+    fn subscription(&self) -> Subscription<Self::Message> {
+        log::info!("iced suscription");
+        Subscription::none()
     }
 }
