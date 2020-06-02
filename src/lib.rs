@@ -232,13 +232,20 @@ impl GUI {
             let window = winit::window::WindowBuilder::new()
                 .with_decorations(false)
                 .with_parent_window(parent)
+                .with_inner_size(winit::dpi::PhysicalSize {
+                    width: WIDTH,
+                    height: HEIGHT,
+                })
                 .build(&event_loop)
                 .unwrap();
             // let window = winit::window::Window::new(&event_loop).unwrap();
 
             let physical_size = window.inner_size();
+            log::info!("physical_size {:?}", physical_size);
+            log::info!("scale_factor {:?}", window.scale_factor());
             let mut viewport = Viewport::with_physical_size(
                 Size::new(physical_size.width, physical_size.height),
+                // Size::new(WIDTH, HEIGHT),
                 window.scale_factor(),
             );
             let mut modifiers = ModifiersState::default();
@@ -310,6 +317,7 @@ impl GUI {
                                 }
                                 */
                                 WindowEvent::Resized(new_size) => {
+                                    log::info!("change viewport {:?}", new_size);
                                     viewport = Viewport::with_physical_size(
                                         Size::new(new_size.width, new_size.height),
                                         window.scale_factor(),
@@ -369,6 +377,21 @@ impl GUI {
                                     label: None,
                                 });
 
+                            let _ = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                                color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
+                                    attachment: &frame.view,
+                                    resolve_target: None,
+                                    load_op: wgpu::LoadOp::Clear,
+                                    store_op: wgpu::StoreOp::Store,
+                                    clear_color: wgpu::Color {
+                                        r: 1.0,
+                                        g: 1.0,
+                                        b: 1.0,
+                                        a: 1.0,
+                                    },
+                                }],
+                                depth_stencil_attachment: None,
+                            });
                             // We draw the scene first
                             let program = state.program();
 
@@ -406,7 +429,6 @@ impl GUI {
 impl Editor for GUIWrapper {
     fn size(&self) -> (i32, i32) {
         log::info!("GUI size");
-        log::info!("W h: {} {}", WIDTH, HEIGHT);
         (WIDTH as i32, HEIGHT as i32)
     }
 
