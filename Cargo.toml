@@ -7,13 +7,21 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-vst = "0.2"
+# vst = "0.2"
+vst = { git = "https://github.com/rustaudio/vst-rs" }
 rand = "0.7"
 winapi = "0.3"
 
-iced = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
-iced_winit = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
-iced_wgpu = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
+log = "0.4"
+simple-logging = "2.0.2"
+log-panics = "2.0.0"
+
+# iced = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
+# iced_winit = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
+# iced_wgpu = { git = "https://github.com/hatoo/iced.git", branch = "run_generator_update" }
+iced = { path = "../iced" }
+iced_winit = { path = "../iced/winit" }
+iced_wgpu = { path = "../iced/wgpu" }
 
 [lib]
 name = "whisper"

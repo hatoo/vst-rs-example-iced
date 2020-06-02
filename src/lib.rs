@@ -2,6 +2,7 @@
 #[macro_use]
 extern crate vst;
 
+use log::LevelFilter;
 use rand::random;
 use std::os::raw::c_void;
 use std::sync::Arc;
@@ -135,6 +136,8 @@ impl Plugin for Whisper {
     }
 
     fn get_editor(&mut self) -> Option<Box<dyn Editor>> {
+        simple_logging::log_to_file("test.log", LevelFilter::Trace);
+        log_panics::init();
         Some(Box::new(GUIWrapper {
             inner: None,
             params: self.params.clone(),
@@ -187,8 +190,8 @@ use winapi::shared::windef::HWND;
 
 use std::ops::Generator;
 
-const WIDTH: u32 = 400;
-const HEIGHT: u32 = 200;
+const WIDTH: u32 = 600;
+const HEIGHT: u32 = 300;
 
 struct GUIWrapper {
     params: Arc<WhisperParameters>,
@@ -209,6 +212,7 @@ impl GUI {
         setting.window.decorations = false;
         setting.window.platform_specific.parent = Some(parent);
         setting.window.size = (WIDTH, HEIGHT);
+        // setting.window.resizable = true;
 
         // Initialize `Application` to share `params`
         // Save Box of `Generator` to do event loop on idle method
@@ -220,16 +224,21 @@ impl GUI {
 
 impl Editor for GUIWrapper {
     fn size(&self) -> (i32, i32) {
+        log::info!("GUI size");
+        log::info!("W h: {} {}", WIDTH, HEIGHT);
         (WIDTH as i32, HEIGHT as i32)
     }
 
     fn position(&self) -> (i32, i32) {
+        log::info!("GUI position");
         (0, 0)
     }
 
     fn idle(&mut self) {
+        log::info!("GUI idle");
         // Poll events here
         if let Some(inner) = self.inner.as_mut() {
+            log::info!("GUI idle run");
             if let std::ops::GeneratorState::Complete(_) =
                 Generator::resume(std::pin::Pin::new(&mut inner.gen), ())
             {
@@ -239,15 +248,23 @@ impl Editor for GUIWrapper {
     }
 
     fn close(&mut self) {
+        log::info!("GUI close");
         self.inner = None;
+        log::info!("GUI closed");
     }
 
     fn open(&mut self, parent: *mut c_void) -> bool {
-        self.inner = Some(GUI::new(parent as HWND, self.params.clone()));
+        log::info!("GUI open");
+        let mut gui = GUI::new(parent as HWND, self.params.clone());
+        // Generator::resume(std::pin::Pin::new(&mut gui.gen), ());
+        self.inner = Some(gui);
+
+        log::info!("GUI opened");
         true
     }
 
     fn is_open(&mut self) -> bool {
+        log::info!("GUI is_open");
         self.inner.is_some()
     }
 }
@@ -281,14 +298,17 @@ impl iced_winit::Application for WhisperGUI {
     type Flags = Arc<WhisperParameters>;
 
     fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
+        log::info!("iced new");
         (Self::new(flags), Command::none())
     }
 
     fn title(&self) -> String {
+        log::info!("iced title");
         String::from("Whisper")
     }
 
     fn update(&mut self, message: Message) -> Command<Self::Message> {
+        log::info!("iced title");
         match message {
             Message::VolumeChanged(v) => {
                 self.params.volume.set(v);
@@ -298,10 +318,12 @@ impl iced_winit::Application for WhisperGUI {
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
-        unimplemented!()
+        log::info!("iced suscription");
+        Subscription::none()
     }
 
     fn view(&mut self) -> Element<Message> {
+        log::info!("iced view");
         Column::new()
             .padding(20)
             .push(Text::new("Volume".to_string()).size(32))
