@@ -136,7 +136,7 @@ impl Plugin for Whisper {
     }
 
     fn get_editor(&mut self) -> Option<Box<dyn Editor>> {
-        simple_logging::log_to_file("test.log", LevelFilter::Trace).unwrap();
+        // simple_logging::log_to_file("test.log", LevelFilter::Trace).unwrap();
         log_panics::init();
         Some(Box::new(GUIWrapper {
             inner: None,
